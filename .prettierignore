@@ -1,0 +1,15 @@
+# Ignore artifacts:
+build
+dist
+.next
+
+# Ignore dependencies:
+node_modules
+
+# Ignore git
+.git
+
+# Ignore documents
+docs
+
+*.mjs
