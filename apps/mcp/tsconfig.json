@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "module": "CommonJS",
+    "target": "ES2022",
+    "outDir": "dist",
+    "rootDir": "src"
+  }
+}
