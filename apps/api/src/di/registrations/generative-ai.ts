@@ -1,6 +1,6 @@
 import { container } from 'tsyringe';
 import { CustomOpenAiClient } from '../../infrastructure/generative-ai/CustomOpenAiClient';
-import { GenerativeAiClient } from '../../infrastructure/generative-ai/GenarativeAiClient.interface';
+import type { GenerativeAiClient } from '../../infrastructure/generative-ai/GenarativeAiClient.interface';
 
 export function registerGenerativeAI() {
   container.register<GenerativeAiClient>('GenerativeAiClient', {

@@ -1,4 +1,4 @@
-import { GenerativeAiClient } from './GenarativeAiClient.interface';
+import type { GenerativeAiClient } from './GenarativeAiClient.interface';
 import { ChatOpenAI } from '@langchain/openai';
 
 export class CustomOpenAiClient implements GenerativeAiClient {

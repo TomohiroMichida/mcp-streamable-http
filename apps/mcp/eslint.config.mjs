@@ -17,10 +17,7 @@ export default [
   ...rootConfig, // rootの設定を継承
   ...compat.extends("next/core-web-vitals"),
   {
-    ignores: [".next/**", "next.config.ts"],
-  },
-  {
-    files: ["src/**/*.{ts,tsx}"],
+    files: ["**/*.{ts,tsx}"],
     languageOptions: {
       parser: tsParser,
       parserOptions: {
