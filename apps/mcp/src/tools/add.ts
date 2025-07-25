@@ -12,6 +12,6 @@ export function registerAddTool(server: McpServer) {
       description: '引数として与えられた2つの数値を加算します。',
       inputSchema: { a: z.number(), b: z.number() },
     },
-    async ({ a, b }) => ({ content: [{ type: 'text', text: String(a + b) }] })
+    ({ a, b }) => ({ content: [{ type: 'text', text: String(a + b) }] })
   );
 }
