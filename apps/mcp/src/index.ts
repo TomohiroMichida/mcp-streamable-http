@@ -5,6 +5,7 @@ async function main() {
   app.use(express.json());
 
   // TODO mcpサーバー初期化
+  await new Promise((resolve) => setTimeout(resolve, 1000));
 
   const PORT = process.env.PORT || 7001;
   app.listen(PORT, () => {
