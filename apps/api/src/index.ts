@@ -14,7 +14,7 @@ app.use(
 );
 
 app.get('/', (c) => {
-  return c.text('API executed successfully!!');
+  return c.text('API executed successfully!');
 });
 
 const port = Number(process.env.API_PORT || 4001);
