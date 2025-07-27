@@ -1,17 +1,21 @@
 import express from 'express';
+import mcpRouter from './routes/mcp';
 
 async function main() {
   const app = express();
   app.use(express.json());
-
-  // TODO mcpサーバー初期化
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+  app.use('/mcp', mcpRouter);
 
   const PORT = process.env.PORT || 7001;
-  app.listen(PORT, () => {
-    console.log(`==================================================`);
-    console.log(`MCP Server is running on http://localhost:${PORT}`);
-    console.log(`==================================================`);
+  await new Promise((resolve, reject) => {
+    app
+      .listen(PORT, () => {
+        console.log(`==================================================`);
+        console.log(`MCP Server is running on http://localhost:${PORT}`);
+        console.log(`==================================================`);
+      })
+      .on('error', reject)
+      .on('listening', resolve);
   });
 }
 
