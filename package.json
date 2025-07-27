@@ -10,7 +10,8 @@
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
     "typecheck:web": "tsc --build apps/web --force --noEmit",
     "typecheck:api": "tsc --build apps/api --force --noEmit",
-    "typecheck": "npm run typecheck:web && npm run typecheck:api"
+    "typecheck:mcp": "tsc --build apps/mcp --force --noEmit",
+    "typecheck": "npm run typecheck:web && npm run typecheck:api && npm run typecheck:mcp"
   },
   "keywords": [],
   "author": "",

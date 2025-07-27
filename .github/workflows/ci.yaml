@@ -33,3 +33,6 @@ jobs:
 
       - name: Build api
         run: npm run typecheck:api
+
+      - name: Build mcp
+        run: npm run typecheck:mcp
