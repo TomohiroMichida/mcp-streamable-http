@@ -4,9 +4,9 @@ import type { GenerativeAiClient } from '../../infrastructure/generative-ai/Gena
 
 export function registerGenerativeAI() {
   container.register<GenerativeAiClient>('GenerativeAiClient', {
-    useValue: new CustomOpenAiClient(
-      process.env.OPENAI_API_KEY || '',
-      process.env.OPENAI_MODEL || 'gpt-3.5-turbo'
-    ),
+    useValue: new CustomOpenAiClient({
+      apiKey: process.env.OPENAI_API_KEY || '',
+      model: process.env.OPENAI_MODEL || 'gpt-3.5-turbo',
+    }),
   });
 }
