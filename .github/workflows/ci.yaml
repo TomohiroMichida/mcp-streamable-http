@@ -28,6 +28,9 @@ jobs:
       - name: Install dependencies (api)
         run: cd apps/api && npm install
 
+      - name: Install dependencies (mcp)
+        run: cd apps/mcp && npm install
+
       - name: Build web
         run: npm run typecheck:web
 
