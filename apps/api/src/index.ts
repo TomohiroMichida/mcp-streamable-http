@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import { serve } from '@hono/node-server';
 import { cors } from 'hono/cors';
-import { configureContainer } from './di/container';
+import { configureContainer } from './infrastructure/di/container';
 
 configureContainer();
 

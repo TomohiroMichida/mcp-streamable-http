@@ -12,10 +12,12 @@
   "dependencies": {
     "@hono/node-server": "^1.15.0",
     "@langchain/openai": "^0.6.2",
+    "@modelcontextprotocol/sdk": "^1.17.0",
     "@pinecone-database/pinecone": "^6.1.1",
     "hono": "^4.5.1",
     "reflect-metadata": "^0.2.2",
-    "tsyringe": "^4.10.0"
+    "tsyringe": "^4.10.0",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@types/node": "^24.0.13",

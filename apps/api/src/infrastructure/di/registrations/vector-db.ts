@@ -1,6 +1,6 @@
 import { container } from 'tsyringe';
-import { PineconeVectorDBClient } from '../../infrastructure/vector-db/PineconeVectorDBClient.interface';
-import type { VectorDBClient } from '../../infrastructure/vector-db/VectorDBClient';
+import { PineconeVectorDBClient } from '../../services/vector-db/PineconeVectorDBClient.interface';
+import type { VectorDBClient } from '../../services/vector-db/VectorDBClient';
 
 export function registerVectorDB() {
   container.register<VectorDBClient>('VectorDBClient', {
