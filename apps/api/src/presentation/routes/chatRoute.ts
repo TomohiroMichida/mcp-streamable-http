@@ -3,10 +3,11 @@ import { Hono } from 'hono';
 const aiRoute = new Hono();
 
 aiRoute.get('/', (c) => {
-  return c.text('AI Route executed successfully!!!');
+  return c.text('chat Route executed successfully!!!');
 });
 
-aiRoute.post('/generate', async (c) => {
+aiRoute.post('/completions', async (c) => {
   const body = await c.req.json();
-  const { prompt } = body;
+  // TODO
+  return body;
 });
