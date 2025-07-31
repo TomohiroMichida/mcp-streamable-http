@@ -26,11 +26,11 @@ export default tseslint.config(
     ],
     rules: {
       "require-await": "error",
-      "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }], // 未使用変数を警告、アンダースコアで始まる引数は無視
+      "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }], // 未使用変数はエラー、アンダースコアで始まる引数は無視
       "no-console": ["warn", { "allow": ["warn", "error"] }], // console.logを警告、console.warnとconsole.errorは許可
       "eqeqeq": ["error", "always"], // 厳密な等価演算子 (===) の使用を強制
       "no-var": "error", // varキーワードの使用を禁止
-      "prefer-const": "warn", // 再代入されない変数はconstを推奨
+      "prefer-const": "error", // 再代入されない変数はconstを強制
       "@typescript-eslint/consistent-type-imports": "error", // 型のインポートを一貫させる
     },
   }
