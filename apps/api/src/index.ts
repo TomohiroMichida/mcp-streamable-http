@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import { serve } from '@hono/node-server';
 import { cors } from 'hono/cors';
+import { errorHandler } from './presentation/middleware/errorHandler';
 import { configureContainer } from './infrastructure/di/container';
 
 configureContainer();
@@ -12,6 +13,8 @@ app.use(
     origin: process.env.CORS_ORIGIN || '*',
   })
 );
+
+app.use('*', errorHandler);
 
 app.get('/', (c) => {
   return c.text('API executed successfully!!!');
