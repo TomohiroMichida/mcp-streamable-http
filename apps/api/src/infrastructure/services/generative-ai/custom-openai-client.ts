@@ -2,7 +2,8 @@ import type { GenerativeAiClient } from './generative-ai-client.interface';
 import { ChatOpenAI } from '@langchain/openai';
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import type { Prompt } from '../../../domain/chat/prompt';
+import type { Prompt } from '../../../domain/chat/prompt/prompt';
+import { Content } from '../../../domain/chat/response/content.js';
 
 export class CustomOpenAiClient implements GenerativeAiClient {
   private readonly openAiClient: ChatOpenAI;
@@ -24,13 +25,13 @@ export class CustomOpenAiClient implements GenerativeAiClient {
     });
   }
 
-  async generateResponse(prompt: Prompt): Promise<string> {
+  async generateResponse(prompt: Prompt): Promise<Content> {
     const promptText = prompt.toPrimitives().text;
     const result = await this.openAiClient.invoke(promptText);
     if (typeof result.content !== 'string') {
       throw new Error('No text content found in response');
     }
-    return result.content;
+    return new Content(result.content);
   }
 
   async getAvailableTools() {
