@@ -1,8 +1,10 @@
+import 'dotenv/config';
 import { Hono } from 'hono';
 import { serve } from '@hono/node-server';
 import { cors } from 'hono/cors';
 import { errorHandler } from './presentation/middleware/errorHandler';
 import { configureContainer } from './infrastructure/di/container';
+import chatRoute from './presentation/routes/chat.route';
 
 configureContainer();
 
@@ -15,6 +17,8 @@ app.use(
 );
 
 app.use('*', errorHandler);
+
+app.route('/chat', chatRoute);
 
 app.get('/', (c) => {
   return c.text('API executed successfully!!!');
