@@ -1,7 +1,7 @@
 import { PromptText } from './prompt-text';
 
 describe('PromptText', () => {
-  it('正常なテキストでインスタンス化できる', () => {
+  it('空文字ではない文字列でインスタンス化できる', () => {
     const text = 'テストプロンプト';
     const promptText = new PromptText(text);
     expect(promptText.value).toBe(text);

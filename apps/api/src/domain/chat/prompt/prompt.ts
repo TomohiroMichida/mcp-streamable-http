@@ -1,7 +1,7 @@
 import type { PromptText } from './prompt-text';
 
 export class Prompt {
-  private constructor(private readonly promptText: PromptText) {}
+  constructor(private readonly promptText: PromptText) {}
 
   public toPrimitives(): {
     text: string;
