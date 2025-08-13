@@ -3,6 +3,7 @@ import type { Request, Response } from 'express';
 import { Router } from 'express';
 import { registerAddTool } from '../tools/add';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
+import { registerHelloTool } from '../tools/hello';
 
 const router = Router();
 
@@ -12,6 +13,7 @@ router.post('/', async (req: Request, res: Response) => {
     version: '1.0.0',
   });
   registerAddTool(server);
+  registerHelloTool(server);
 
   const transport = new StreamableHTTPServerTransport({
     sessionIdGenerator: undefined,
