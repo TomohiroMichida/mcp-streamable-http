@@ -7,7 +7,6 @@ export function registerGenerativeAI() {
     useValue: new CustomOpenAiClient({
       apiKey: process.env.OPENAI_API_KEY || '',
       model: process.env.OPENAI_MODEL || 'gpt-3.5-turbo',
-      mcpEndpoint: process.env.MCP_ENDPOINT || 'http://localhost:7001/mcp',
     }),
   });
 }

@@ -13,27 +13,27 @@ import {
 
 export class CustomOpenAiClient implements GenerativeAiClient {
   private readonly openAiClient: ChatOpenAI;
-  private readonly mcpClient: Client;
-  private readonly transport: StreamableHTTPClientTransport;
 
-  constructor(config: { apiKey: string; model: string; mcpEndpoint: string }) {
+  constructor(config: { apiKey: string; model: string }) {
     this.openAiClient = new ChatOpenAI({
       apiKey: config.apiKey,
       model: config.model,
     });
-    this.transport = new StreamableHTTPClientTransport(
-      new URL(config.mcpEndpoint)
-    );
-
-    this.mcpClient = new Client({
-      name: 'custom-mcp-client',
-      version: '1.0.0',
-    });
   }
 
   async generateResponse(prompt: Prompt): Promise<Content> {
+    const transport = new StreamableHTTPClientTransport(
+      new URL(process.env.MCP_ENDPOINT || 'http://localhost:7001/mcp')
+    );
+    const mcpClient = new Client({
+      name: 'custom-mcp-client',
+      version: '1.0.0',
+    });
+    await mcpClient.connect(transport);
+
     const promptText = prompt.toPrimitives().text;
-    const availableTools = await this.getAvailableTools();
+    const tools = await mcpClient.listTools();
+    const availableTools = tools.tools;
     const messages = [
       new SystemMessage(
         `利用可能なツール： ${availableTools.map((tool) => tool.name).join(', ')}`
@@ -54,7 +54,8 @@ export class CustomOpenAiClient implements GenerativeAiClient {
     const retryMessages = [...messages];
     for (const toolCall of result.tool_calls) {
       try {
-        const toolResult = await this.mcpClient.callTool({
+        console.log(`ツールを実行します: ${toolCall.name}`);
+        const toolResult = await mcpClient.callTool({
           name: toolCall.name,
           arguments: toolCall.args,
         });
@@ -80,11 +81,9 @@ export class CustomOpenAiClient implements GenerativeAiClient {
     if (typeof retryResult.content !== 'string') {
       throw new Error('No text content found in retry response');
     }
-    return new Content(retryResult.content);
-  }
+    mcpClient.close();
+    transport.close();
 
-  async getAvailableTools() {
-    const tools = await this.mcpClient.listTools();
-    return tools.tools;
+    return new Content(retryResult.content);
   }
 }
