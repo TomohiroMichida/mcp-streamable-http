@@ -4,12 +4,7 @@ import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import type { Prompt } from '../../../domain/chat/prompt/prompt';
 import { Content } from '../../../domain/chat/response/content.js';
-import {
-  SystemMessage,
-  HumanMessage,
-  AIMessage,
-  ToolMessage,
-} from '@langchain/core/messages';
+import { HumanMessage, AIMessage, ToolMessage } from '@langchain/core/messages';
 
 export class CustomOpenAiClient implements GenerativeAiClient {
   private readonly openAiClient: ChatOpenAI;
@@ -31,15 +26,18 @@ export class CustomOpenAiClient implements GenerativeAiClient {
     });
     await mcpClient.connect(transport);
 
+    const availableTools = await mcpClient
+      .listTools()
+      .then((tools) => tools.tools);
+    this.openAiClient.bindTools(
+      availableTools.map((tool) => ({
+        type: 'function',
+        function: tool,
+      }))
+    );
+
     const promptText = prompt.toPrimitives().text;
-    const tools = await mcpClient.listTools();
-    const availableTools = tools.tools;
-    const messages = [
-      new SystemMessage(
-        `利用可能なツール： ${availableTools.map((tool) => tool.name).join(', ')}`
-      ),
-      new HumanMessage(promptText),
-    ];
+    const messages = [new HumanMessage(promptText)];
     const result = await this.openAiClient.invoke(messages);
 
     if (typeof result.content !== 'string') {

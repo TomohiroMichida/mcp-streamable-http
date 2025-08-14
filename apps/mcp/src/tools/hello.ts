@@ -8,7 +8,8 @@ export function registerHelloTool(server: McpServer) {
     'hello',
     {
       title: '特別な挨拶',
-      description: '特別な挨拶を返します。',
+      description:
+        '特別な挨拶を返します。特別な挨拶をするように指示された場合は、このツールを呼び出します',
     },
     () => ({
       content: [{ type: 'text', text: 'HHHDDDOOOWNN！特別な挨拶です。' }],
