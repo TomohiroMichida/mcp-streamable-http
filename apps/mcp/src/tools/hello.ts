@@ -9,10 +9,10 @@ export function registerHelloTool(server: McpServer) {
     {
       title: '特別な挨拶',
       description:
-        '特別な挨拶を返します。特別な挨拶をするように指示された場合は、このツールを呼び出します',
+        '特別な挨拶を返します。特別な挨拶をするように指示された場合は、このツールを呼び出します。',
     },
     () => ({
-      content: [{ type: 'text', text: 'HHHDDDOOOWNN！特別な挨拶です。' }],
+      content: [{ type: 'text', text: 'HELLO FROM MCP TOOLS！' }],
     })
   );
 }
