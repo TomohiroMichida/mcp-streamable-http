@@ -26,62 +26,76 @@ export class CustomOpenAiClient implements GenerativeAiClient {
     });
     await mcpClient.connect(transport);
 
-    const availableTools = await mcpClient
-      .listTools()
-      .then((tools) => tools.tools);
-    this.openAiClient.bindTools(
-      availableTools.map((tool) => ({
-        type: 'function',
-        function: tool,
-      }))
-    );
+    try {
+      const availableTools = await mcpClient
+        .listTools()
+        .then((tools) => tools.tools);
+      this.openAiClient.bindTools(
+        availableTools.map((tool) => ({
+          type: 'function',
+          function: tool,
+        }))
+      );
 
-    const promptText = prompt.toPrimitives().text;
-    const messages = [new HumanMessage(promptText)];
-    const result = await this.openAiClient.invoke(messages);
+      const promptText = prompt.toPrimitives().text;
+      const messages = [new HumanMessage(promptText)];
+      const result = await this.openAiClient.invoke(messages);
 
-    if (typeof result.content !== 'string') {
-      throw new Error('No text content found in response');
-    }
-
-    if (!result.tool_calls || result.tool_calls.length === 0) {
-      return new Content(result.content);
-    }
-
-    // TODO ツール実行パターン リファクタ
-    const retryMessages = [...messages];
-    for (const toolCall of result.tool_calls) {
-      try {
-        console.log(`ツールを実行します: ${toolCall.name}`);
-        const toolResult = await mcpClient.callTool({
-          name: toolCall.name,
-          arguments: toolCall.args,
-        });
-        retryMessages.push(
-          new AIMessage({
-            content: result.content || '',
-            tool_calls: result.tool_calls,
-          })
-        );
-        retryMessages.push(
-          new ToolMessage({
-            content: JSON.stringify(toolResult.content),
-            tool_call_id: toolCall.id!,
-          })
-        );
-      } catch (error) {
-        throw new Error(
-          `ツール実行中にエラーが発生しました： ${toolCall.name}, ${error}`
-        );
+      if (typeof result.content !== 'string') {
+        throw new Error('No text content found in response');
       }
-    }
-    const retryResult = await this.openAiClient.invoke(retryMessages);
-    if (typeof retryResult.content !== 'string') {
-      throw new Error('No text content found in retry response');
-    }
-    mcpClient.close();
-    transport.close();
 
-    return new Content(retryResult.content);
+      if (!result.tool_calls || result.tool_calls.length === 0) {
+        return new Content(result.content);
+      }
+
+      // TODO ツール実行ロジックを分離する
+      const retryMessages = [...messages];
+      for (const toolCall of result.tool_calls) {
+        if (!toolCall.id) throw new Error('Invalid tool call: missing id');
+        try {
+          console.log(`ツールを実行します: ${toolCall.name}`);
+          const toolResult = await mcpClient.callTool({
+            name: toolCall.name,
+            arguments: toolCall.args,
+          });
+          retryMessages.push(
+            new AIMessage({
+              content: result.content || '',
+              tool_calls: result.tool_calls,
+            })
+          );
+          retryMessages.push(
+            new ToolMessage({
+              content: JSON.stringify(toolResult.content),
+              tool_call_id: toolCall.id,
+            })
+          );
+        } catch (error) {
+          throw new Error(
+            `ツール実行中にエラーが発生しました： ${toolCall.name}, ${error}`
+          );
+        }
+      }
+      const retryResult = await this.openAiClient.invoke(retryMessages);
+      if (typeof retryResult.content !== 'string') {
+        throw new Error('No text content found in retry response');
+      }
+      return new Content(retryResult.content);
+    } finally {
+      await this.closeMcpConnection(mcpClient, transport);
+    }
+  }
+
+  private async closeMcpConnection(
+    mcpClient: Client,
+    transport: StreamableHTTPClientTransport
+  ) {
+    try {
+      await mcpClient.close();
+      await transport.close();
+    } catch (error) {
+      console.error('MCP Clientのクローズ中にエラーが発生しました:', error);
+    }
   }
 }
