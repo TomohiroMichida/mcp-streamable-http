@@ -3,11 +3,6 @@ services:
     build:
       context: ./apps/api
       dockerfile: Dockerfile
-    image: mcp-streamable-http-api:latest
-    # 開発用
-    # volumes:
-    #   - ./apps/api/src:/app/src
-    # command: npm run dev
     ports:
       - '${API_PORT}:4000'
     environment:
@@ -16,20 +11,24 @@ services:
     build:
       context: ./apps/web
       dockerfile: Dockerfile
-    image: web-frontend:latest
-    # 開発用
-    # volumes:
-    #   - ./apps/web:/app
-    # command: npm run dev
     ports:
       - '${WEB_PORT}:3000'
     environment:
       - NODE_ENV=${NODE_ENV}
   pinecone:
-    image: ghcr.io/pinecone-io/pinecone-local:latest
     environment:
       PORT: 5080
       PINECONE_HOST: localhost
     ports:
       - '5080-5090:5080-5090'
     platform: linux/amd64
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - '${POSTGRES_PORT}:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
