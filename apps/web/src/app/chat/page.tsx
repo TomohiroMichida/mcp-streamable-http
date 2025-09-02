@@ -1,59 +1,17 @@
 'use client';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-
-interface Message {
-  role: 'user' | 'assistant';
-  content: string;
-  timestamp: Date;
-}
+import { useChat } from '@/hooks/use-chat';
 
 export default function ChatPage() {
   const [prompt, setPrompt] = useState('');
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [loading, setLoading] = useState(false);
+  const { messages, loading, sendMessage } = useChat();
 
   const handleSend = async () => {
     if (!prompt.trim()) return;
 
-    const userMessage: Message = {
-      role: 'user',
-      content: prompt,
-      timestamp: new Date(),
-    };
-
-    setMessages((prev) => [...prev, userMessage]);
+    await sendMessage(prompt);
     setPrompt('');
-    setLoading(true);
-
-    try {
-      // TODO API実行はhookに切り出す
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_ENDPOINT}/chat/completions`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ prompt }),
-        }
-      );
-      const data = await res.json();
-
-      const aiMessage: Message = {
-        role: 'assistant',
-        content: data.content ?? 'No response',
-        timestamp: new Date(),
-      };
-
-      setMessages((prev) => [...prev, aiMessage]);
-    } catch (e) {
-      const errorMessage: Message = {
-        role: 'assistant',
-        content: 'エラーが発生しました',
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, errorMessage]);
-    }
-    setLoading(false);
   };
 
   return (
